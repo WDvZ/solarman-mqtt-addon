@@ -1,21 +1,19 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-LABEL maintainer "Martijn Pepping <martijn.pepping@automiq.nl>"
-LABEL org.opencontainers.image.source https://github.com/mpepping/solarman-mqtt
-
-ADD . /opt/app-root/src/
-WORKDIR /opt/app-root/src
-
 RUN \
-    apk add --no-cache \
-    python3 && \
-    python3 -m venv /opt/venv && \
-    . /opt/venv/bin/activate && \
-    pip install --upgrade pip && \
-    pip install -r requirements.txt
+  apk add --no-cache \
+    python3 \
+    && pip install \
+        paho_mqtt==1.5.1 \
+        jsonschema==4.4.0
+# Python 3 HTTP Server serves the current working dir
+# So let's set it to our add-on persistent data directory.
+WORKDIR /data
 
-ENV PATH=/opt/venv/bin:$PATH
+# Copy data for add-on
+COPY run.sh /
+COPY rootfs /
+RUN chmod a+x /run.sh
 
-ENTRYPOINT ["python", "run.py"]
-CMD ["-d"]
+CMD [ "/run.sh" ]

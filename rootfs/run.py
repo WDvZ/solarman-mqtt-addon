@@ -1,5 +1,6 @@
 """
-Collect PV data from the SolarmanPV API and send Power+Energy data (W+kWh) to MQTT
+Collect PV data from the SolarmanPV API and send Power+Energy
+data (W+kWh) to MQTT
 """
 
 import solarman
